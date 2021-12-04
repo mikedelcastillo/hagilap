@@ -1,6 +1,14 @@
-import { readable, Readable, Writable, writable } from "svelte/store"
+import { derived, get, readable, Readable, Writable, writable } from "svelte/store"
+import { v4 as uuid4 } from "uuid"
 
-export class TimeTracker{
+export type TimeTrackerState = {
+    editing: boolean,
+}
+export class TimeTracker {
+    /**
+     * ID of TimeTracker
+     */
+    id: string = uuid4()
     /**
      * Title of the time tracker card.
      */
@@ -18,20 +26,16 @@ export class TimeTracker{
      */
     updatedDate: Date = new Date()
     /**
-     * Computes milliseconds left.
-     * @returns value for milliseconds left.
+     * State of TimeTracker
      */
-    computeMillisecondsLeft() : number{
-        return new Date().getTime() - this.trackDate.getTime()
+    state: TimeTrackerState = {
+        editing: false,
     }
-    /**
-     * Milliseconds left.
-     */
-    millisecondsLeft: Readable<number> = readable(this.computeMillisecondsLeft(), set => {
-        const interval = setInterval(() => set(this.computeMillisecondsLeft()), 10)
-        return () => clearInterval(interval)
-    })
 }
 
-export const timeTrackers: Writable<Array<TimeTracker>> = writable([])
+export const timeTrackers: Writable<object> = writable({})
 
+export const time: Readable<Date> = readable(new Date(), set => {
+    const interval = setInterval(() => set(new Date()), 1000 / 4)
+    return () => clearInterval(interval)
+})
