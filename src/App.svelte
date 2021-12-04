@@ -1,30 +1,41 @@
-<script>
-	export let name;
+<script lang="ts">
+	import { Router, Route, Link } from "svelte-navigator"
+	import { Writable, writable } from "svelte/store"
+	import Component from "./Component.svelte"
+	import { TimeTracker, timeTrackers } from "./stores"
+
+	console.log(timeTrackers)
+
+	function doSomething() : void{
+		const timeTracker: TimeTracker = new TimeTracker()
+		timeTracker.title = `Random title #${Math.floor(Math.random()*1000)}`
+		$timeTrackers = [...$timeTrackers, timeTracker]
+	}
+
+	let test: Writable<number> = writable(0)
+	setInterval(() => {
+		test.update(t => t + 1)
+	}, 100)
 </script>
 
-<main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-</main>
+<template lang="pug">
+	Router
+		Route(path="/")
+			h1 Learning svelte
+			p Lorem ipsum, dolor sit amet consectetur adipisicing elit. Provident illum ipsa suscipit aut consectetur a saepe modi soluta ratione, dolorum eligendi culpa, non ex, amet mollitia iusto hic accusantium nam!
+			Link(to="about") About
+		Route(path="about")
+			h2 About
+			p I'm learning a lot!
+			Link(to="/") Home
+		h1 {$test}
+		button(on:click="{doSomething}") do something
+		pre {JSON.stringify($timeTrackers, null, 2)}
+		+each("$timeTrackers as timeTracker")
+			Component(timeTracker="{timeTracker}")
+</template>
 
-<style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+<style lang="sass">
+	*
+		color: red
 </style>
