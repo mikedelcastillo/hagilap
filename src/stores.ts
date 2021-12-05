@@ -4,39 +4,19 @@ import { v4 as uuid4 } from "uuid"
 const STORAGE_TIME_TRACKER_KEY = "t"
 
 export type TimeTracker = {
-    /**
-     * ID of TimeTracker
-     */
+    // Details
     id: string,
-    /**
-     * Title of the time tracker card.
-     */
     title: string,
-    /**
-     * Date to track.
-     */
+    colorBackground: string,
+    colorText: string,
+    // Dates
     trackDate: Date,
-    /**
-     * Date tracker was created.
-     */
     createdDate: Date,
-    /**
-     * Date tracker was updated.
-     */
     updatedDate: Date,
-    /**
-     * State of editing
-     */
+    // States
     editing: boolean,
-    /**
-     * Check if pinned
-     */
     pinned: boolean,
-    /**
-     * Is selected
-     */
     selected: boolean,
-    
 }
 
 export const time: Readable<Date> = readable(new Date(), set => {
@@ -57,6 +37,7 @@ export function createTimeTrackerStore() {
                 }
                 timeTracker.editing = false
                 timeTracker.selected = false
+                // TODO: Validate for future changes
                 return timeTracker
             })
         } catch(e){
@@ -97,9 +78,13 @@ export function createTimeTrackerStore() {
             const timeTracker: TimeTracker = {
                 id: uuid4(),
                 title: "New Time Tracker",
+                colorBackground: "#009C5B",
+                colorText: "#ffffff",
+
                 trackDate: new Date(),
                 createdDate: new Date(),
                 updatedDate: new Date(),
+
                 editing: false,
                 pinned: false,
                 selected: false,

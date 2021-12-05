@@ -22,8 +22,8 @@
                     include ../assets/icons/star.svg
                 +if(`icon == "star_border"`)
                     include ../assets/icons/star_border.svg
-        .text
-            +if("$$slots.default")
+        +if("$$slots.default")
+            .text
                 slot 
 </template>
 
@@ -47,7 +47,7 @@ button
         *
             fill: var(--color-text) !important
     .text
-        padding-left: var(--button-spacing)
+        padding: 0 var(--button-spacing)
         text-transform: uppercase
         font-size: var(--font-size--1)
         color: var(--color-text)

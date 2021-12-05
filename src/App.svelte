@@ -15,12 +15,15 @@
 <template lang="pug">
     #app-container
         #content-container
-            +each("Object.values($timeTrackers) as timeTracker")
-                <TimeTrackerCard {timeTracker} />
+            .time-trackers-group
+                .label All trackers
+                .time-trackers
+                    +each("Object.values($timeTrackers) as timeTracker")
+                        <TimeTrackerCard {timeTracker} />
         #action-bar
             .column.left
                 Button(on:click!="{create}" icon="add") Create new tracker
-            .column.right
+            //- .column.right
                 Button(icon="sort") Sort
                 Button(icon="settings")
 </template>
@@ -38,6 +41,19 @@
         #content-container
             flex-grow: 1
             flex-shrink: 1
+            overflow-y: auto
+            overflow-x: hidden
+            .time-trackers-group
+                .label
+                    padding: var(--gutter-static-1) var(--gutter-static-2)
+                    font-size: var(--font-size--1)
+                    text-transform: uppercase
+                    font-weight: bold
+                .time-trackers
+                    padding: 0 var(--grid-gap)
+                    display: grid
+                    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))
+                    grid-gap: var(--grid-gap)
         #action-bar
             flex-grow: 0
             flex-shrink: 0
