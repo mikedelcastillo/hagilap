@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;700&display=swap')
+    
+:global(:root)
+    --color-text: white
+    --color-background-1: rgb(10, 10, 10)
+    --color-background-2: rgb(20, 20, 20)
+    --color-background-3: rgb(30, 30, 30)
+
+    --font-size-default: 14px
+    --font-size-0: var(--font-size-default)
+
+    --font-size--2: calc(var(--font-size-0) - 4px)
+    --font-size--1: calc(var(--font-size-0) - 2px)
+
+    --font-size-1: calc(var(--font-size-0) + 2px)
+    --font-size-2: calc(var(--font-size-0) + 6px)
+    --font-size-3: calc(var(--font-size-0) + 10px)
+    --font-size-4: calc(var(--font-size-0) + 16px)
+    --font-size-5: calc(var(--font-size-0) + 36px)
+    --font-size-6: calc(var(--font-size-0) + 50px)
+    
+    --font-body:  'IBM Plex Sans', sans-serif
+    --button-spacing: var(--font-size--1)
+    --action-bar-height: calc(var(--font-size-default) * (42/14))
+
+    --gutter-dynamic-1: 2%
+    --gutter-static-1: var(--font-size-default)
+    --gutter-static-2: calc(var(--font-size-default) * 2)
+    
+:global(html), :global(body)
+    margin: 0
+    padding: 0
+    width: 100%
+    height: 100%
+    background-color: var(--color-background-1)
+    color: var(--color-text)
+    font-size: var(--font-size-default)
+    font-family: var(--font-body)
+
+:global(*)
+    user-select: none
+    position: relative
+    box-sizing: border-box
+
+:global(input)
+    user-select: auto

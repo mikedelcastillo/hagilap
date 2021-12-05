@@ -1,4 +1,6 @@
 <script lang="ts">
+    import Button from "./Button.svelte"
+    
     import { time, TimeTracker, timeTrackers } from "../stores"
     import { dateToInputDate } from "../utils"
     export let timeTracker: TimeTracker
@@ -14,16 +16,12 @@
         }
     }
 
-    const toggleEdit = e => {
-        timeTracker.editing ? update({ editing: false }) : timeTrackers.edit(timeTracker)
-        e.stopPropagation()
-    }
-    const togglePin = e => {
-        update({ pinned: !timeTracker.pinned })
-        e.stopPropagation()
-    }
-    const toggleSelect = e => {
-        timeTracker.selected ? update({ selected: false }) : timeTrackers.select(timeTracker)
+    const toggleEdit = e => timeTrackers.edit(timeTracker.editing ? null : timeTracker)
+    const togglePin = e => update({ pinned: !timeTracker.pinned })
+    const toggleSelect = e => timeTrackers.select(timeTracker.selected ? null : timeTracker)
+    const doneEdit = e => {
+        toggleEdit(e)
+        toggleSelect(e)
     }
 
     $: trackDateInputValue = dateToInputDate(timeTracker.trackDate)
@@ -31,15 +29,15 @@
 </script>
 
 <template lang="pug">
-    .time-tracker-card(on:click!="{toggleSelect}" draggable=true)
-        .main-card
+    .time-tracker-card(draggable=true)
+        .main-card(on:click!="{toggleSelect}")
             .column.left
                 .title { timeTracker.title }
                 .date { timeTracker.trackDate.toLocaleString() }
             .column.right
                 .number 5,365
                 .unit Months
-        +if("timeTracker.editing")
+        +if("timeTracker.editing && timeTracker.selected")
             .edit-form
                 input(
                     type="text" 
@@ -50,15 +48,14 @@
                     value!="{trackDateInputValue}"
                     on:input!="{e => setTrackDate(e.target.value) }"
                 )
-        .edit-bar
-            .left
-                .action.edit(on:click!="{toggleEdit}") Edit
-                .action.pin(on:click!="{togglePin}") {timeTracker.pinned ? "Unpin" : "Pin"}
-            .right
-                .action.delete(on:click!="{e => timeTrackers.delete(timeTracker)}") Delete
+        +if("timeTracker.selected")
+            .edit-bar
+                .left
+                    +if("timeTracker.editing")
+                        Button.action.edit(on:click!="{doneEdit}" icon="check")
+                        +else()
+                            Button.action.edit(on:click!="{toggleEdit}" icon="edit")
+                    Button.action.pin(on:click!="{togglePin}" icon!="{timeTracker.pinned ? 'star' : 'star_border'}")
+                .right
+                    Button.action.delete(on:click!="{e => timeTrackers.delete(timeTracker)}" icon="delete")
 </template>
-
-<style lang="sass">
-    button
-        color: blue
-</style>

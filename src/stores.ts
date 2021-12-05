@@ -44,15 +44,19 @@ export const time: Readable<Date> = readable(new Date(), set => {
     return () => clearInterval(interval)
 })
 
+// TODO: Add undo history
+
 export function createTimeTrackerStore() {
     const storageValue = (() => {
         try{
             const data = JSON.parse(localStorage.getItem(STORAGE_TIME_TRACKER_KEY))
             if(!(data instanceof Array)) throw new Error()
-            return data.map(timeTracker => {
+            return data.map((timeTracker: TimeTracker) => {
                 for(let key in timeTracker){
                     if(key.endsWith("Date")) timeTracker[key] = new Date(timeTracker[key])
                 }
+                timeTracker.editing = false
+                timeTracker.selected = false
                 return timeTracker
             })
         } catch(e){
@@ -75,22 +79,24 @@ export function createTimeTrackerStore() {
                 return $store
             })
         },
-        edit(timeTracker: TimeTracker){
+        edit(timeTracker: TimeTracker | null){
             store.update($store => $store.map(otherTimeTracker => {
                 otherTimeTracker.editing = timeTracker == otherTimeTracker
                 return otherTimeTracker
             }))
         },
-        select(timeTracker: TimeTracker){
+        select(timeTracker: TimeTracker | null){
             store.update($store => $store.map(otherTimeTracker => {
-                otherTimeTracker.selected = timeTracker == otherTimeTracker
+                const selected = timeTracker == otherTimeTracker
+                otherTimeTracker.selected = selected
+                otherTimeTracker.editing = false
                 return otherTimeTracker
             }))
         },
         create(partialTimeTracker?: Partial<TimeTracker>): TimeTracker{
             const timeTracker: TimeTracker = {
                 id: uuid4(),
-                title: "Title",
+                title: "New Time Tracker",
                 trackDate: new Date(),
                 createdDate: new Date(),
                 updatedDate: new Date(),
