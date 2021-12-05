@@ -1,21 +1,34 @@
 <script lang="ts">
-	import { derived, get, Writable } from "svelte/store"
 	import { time, TimeTracker, timeTrackers } from "./stores"
 	export let timeTracker: TimeTracker
 
-	$: millisecondsLeft = $time.getTime() - $timeTrackers[timeTracker.id].trackDate.getTime()
+	$: millisecondsLeft = $time.getTime() - timeTracker.trackDate.getTime()
 	
-	function edit(){
-		$timeTrackers[timeTracker.id].state.editing = !$timeTrackers[timeTracker.id].state.editing
+	function update(updates: Partial<TimeTracker>): void{
+		timeTrackers.update(timeTracker, updates)
+	}
+
+	function updateState(updates: Partial<TimeTracker['state']>): void{
+		timeTrackers.updateState(timeTracker, updates)
+	}
+
+	function toggleEdit(){
+		updateState({
+			editing: !timeTracker.state.editing,
+		})
 	}
 </script>
 
 <template lang="pug">
-	h2 { $timeTrackers[timeTracker.id].title }
-	input(type="text" bind:value="{$timeTrackers[timeTracker.id].title}")
+	h2 { timeTracker.title }
 	code { millisecondsLeft }
-	pre state: { JSON.stringify($timeTrackers[timeTracker.id].state) }
-	button(on:click="{edit}") edit
+	pre state: { JSON.stringify(timeTracker.state) }
+	button(on:click="{toggleEdit}") edit
+	+if("timeTracker.state.editing")
+		input(
+			type="text" 
+			value!="{timeTracker.title}" 
+			on:input!="{e => update({title: e.target.value})}")
 </template>
 
 <style lang="sass">
