@@ -4,39 +4,19 @@ import { v4 as uuid4 } from "uuid"
 const STORAGE_TIME_TRACKER_KEY = "t"
 
 export type TimeTracker = {
-    /**
-     * ID of TimeTracker
-     */
+    // Details
     id: string,
-    /**
-     * Title of the time tracker card.
-     */
     title: string,
-    /**
-     * Date to track.
-     */
+    colorBackground: string,
+    colorText: string,
+    // Dates
     trackDate: Date,
-    /**
-     * Date tracker was created.
-     */
     createdDate: Date,
-    /**
-     * Date tracker was updated.
-     */
     updatedDate: Date,
-    /**
-     * State of editing
-     */
+    // States
     editing: boolean,
-    /**
-     * Check if pinned
-     */
     pinned: boolean,
-    /**
-     * Is selected
-     */
     selected: boolean,
-    
 }
 
 export const time: Readable<Date> = readable(new Date(), set => {
@@ -44,15 +24,20 @@ export const time: Readable<Date> = readable(new Date(), set => {
     return () => clearInterval(interval)
 })
 
+// TODO: Add undo history
+
 export function createTimeTrackerStore() {
     const storageValue = (() => {
         try{
             const data = JSON.parse(localStorage.getItem(STORAGE_TIME_TRACKER_KEY))
             if(!(data instanceof Array)) throw new Error()
-            return data.map(timeTracker => {
+            return data.map((timeTracker: TimeTracker) => {
                 for(let key in timeTracker){
                     if(key.endsWith("Date")) timeTracker[key] = new Date(timeTracker[key])
                 }
+                timeTracker.editing = false
+                timeTracker.selected = false
+                // TODO: Validate for future changes
                 return timeTracker
             })
         } catch(e){
@@ -75,25 +60,31 @@ export function createTimeTrackerStore() {
                 return $store
             })
         },
-        edit(timeTracker: TimeTracker){
+        edit(timeTracker: TimeTracker | null){
             store.update($store => $store.map(otherTimeTracker => {
                 otherTimeTracker.editing = timeTracker == otherTimeTracker
                 return otherTimeTracker
             }))
         },
-        select(timeTracker: TimeTracker){
+        select(timeTracker: TimeTracker | null){
             store.update($store => $store.map(otherTimeTracker => {
-                otherTimeTracker.selected = timeTracker == otherTimeTracker
+                const selected = timeTracker == otherTimeTracker
+                otherTimeTracker.selected = selected
+                otherTimeTracker.editing = false
                 return otherTimeTracker
             }))
         },
         create(partialTimeTracker?: Partial<TimeTracker>): TimeTracker{
             const timeTracker: TimeTracker = {
                 id: uuid4(),
-                title: "Title",
+                title: "New Time Tracker",
+                colorBackground: "#009C5B",
+                colorText: "#ffffff",
+
                 trackDate: new Date(),
                 createdDate: new Date(),
                 updatedDate: new Date(),
+
                 editing: false,
                 pinned: false,
                 selected: false,
@@ -119,7 +110,11 @@ timeTrackers.subscribe($timeTrackers => {
 
 if(get(timeTrackers).length == 0){
     timeTrackers.create({
-        title: "Meg&Mike Wedding",
-        trackDate: new Date("03/15/2021, 10:00:00")
+        title: "Merry Christmas!",
+        trackDate: new Date("12/25/2021, 00:00:00")
+    })
+    timeTrackers.create({
+        title: "PH Elections",
+        trackDate: new Date("05/09/2022, 10:00:00")
     })
 }
