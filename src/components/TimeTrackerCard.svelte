@@ -50,14 +50,16 @@
                         placeholder="Title"
                         value!="{timeTracker.title}" 
                         on:input!="{e => update({title: e.target.value})}")
-                    input.input-color(
-                        type="color"
-                        value!="{timeTracker.colorText}"
-                        on:input!="{e => update({colorText: e.target.value})}")
-                    input.input-color(
-                        type="color"
-                        value!="{timeTracker.colorBackground}"
-                        on:input!="{e => update({colorBackground: e.target.value})}")
+                    .input-color-container.color-text
+                        input.input-color(
+                            type="color"
+                            value!="{timeTracker.colorText}"
+                            on:input!="{e => update({colorText: e.target.value})}")
+                    .input-color-container.color-background
+                        input.input-color(
+                            type="color"
+                            value!="{timeTracker.colorBackground}"
+                            on:input!="{e => update({colorBackground: e.target.value})}")
                 .input-line
                     input.input-text(
                         type="datetime-local"
@@ -120,10 +122,7 @@
                 display: flex
                 justify-content: space-between
                 align-items: center
-
-                &.title
-                    .input-text
-                        margin-right: 1em
+                gap: 0.5em
 
                 .input-text
                     width: 100%
@@ -132,6 +131,7 @@
                     color: var(--color-text)
                     background-color: transparent
                     border: 0
+                    border-radius: 0
                     appearance: none
                     border-bottom: 1px dashed var(--color-text)
                     padding: 0.5em 0
@@ -139,12 +139,31 @@
                     &:focus
                         outline: 0
                         border-bottom-style: solid
-
-                .input-color
-                    appearance: none
-                    border: 0
-                    background-color: transparent
-                    border-radius: 100%
+                .input-color-container
+                    $size: var(--font-size-4)
+                    width: $size
+                    height: $size
+                    border-radius: $size
+                    overflow: hidden
+                    flex-grow: 0
+                    flex-shrink: 0
+                    &.color-text
+                        border: 1px solid var(--color-background)
+                    &.color-background
+                        border: 1px solid var(--color-text)
+                    .input-color
+                        padding: 0
+                        margin: -100%
+                        outline: 0
+                        appearance: none
+                        border: 0
+                        background-color: transparent
+                        width: 200%
+                        height: 200%
+                        position: absolute
+                        top: 50%
+                        left: 50%
+                        border-radius: 0
         .edit-bar
             background-color: var(--color-background-dim)
             height: var(--action-bar-height)
