@@ -75,6 +75,18 @@ export function createTimeTrackerStore() {
                 return $store
             })
         },
+        edit(timeTracker: TimeTracker){
+            store.update($store => $store.map(otherTimeTracker => {
+                otherTimeTracker.editing = timeTracker == otherTimeTracker
+                return otherTimeTracker
+            }))
+        },
+        select(timeTracker: TimeTracker){
+            store.update($store => $store.map(otherTimeTracker => {
+                otherTimeTracker.selected = timeTracker == otherTimeTracker
+                return otherTimeTracker
+            }))
+        },
         create(partialTimeTracker?: Partial<TimeTracker>): TimeTracker{
             const timeTracker: TimeTracker = {
                 id: uuid4(),
