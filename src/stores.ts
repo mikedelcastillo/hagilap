@@ -110,7 +110,11 @@ timeTrackers.subscribe($timeTrackers => {
 
 if(get(timeTrackers).length == 0){
     timeTrackers.create({
-        title: "Meg&Mike Wedding",
-        trackDate: new Date("03/15/2021, 10:00:00")
+        title: "Merry Christmas!",
+        trackDate: new Date("12/25/2021, 00:00:00")
+    })
+    timeTrackers.create({
+        title: "PH Elections",
+        trackDate: new Date("05/09/2022, 10:00:00")
     })
 }
