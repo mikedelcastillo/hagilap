@@ -1,6 +1,7 @@
-import { update_await_block_branch } from "svelte/internal"
-import { readable, Readable, Writable, writable } from "svelte/store"
+import { get, readable, Readable, Writable, writable } from "svelte/store"
 import { v4 as uuid4 } from "uuid"
+
+const STORAGE_TIME_TRACKER_KEY = "t"
 
 export type TimeTracker = {
     /**
@@ -24,18 +25,18 @@ export type TimeTracker = {
      */
     updatedDate: Date,
     /**
-     * State of TimeTracker
+     * State of editing
      */
-    state: {
-        /**
-         * State of editing
-         */
-        editing: boolean,
-        /**
-         * Check if pinned
-         */
-        pinned: boolean,
-    },
+    editing: boolean,
+    /**
+     * Check if pinned
+     */
+    pinned: boolean,
+    /**
+     * Is selected
+     */
+    selected: boolean,
+    
 }
 
 export const time: Readable<Date> = readable(new Date(), set => {
@@ -44,7 +45,21 @@ export const time: Readable<Date> = readable(new Date(), set => {
 })
 
 export function createTimeTrackerStore() {
-    const store: Writable<Array<TimeTracker>> = writable([])
+    const storageValue = (() => {
+        try{
+            const data = JSON.parse(localStorage.getItem(STORAGE_TIME_TRACKER_KEY))
+            if(!(data instanceof Array)) throw new Error()
+            return data.map(timeTracker => {
+                for(let key in timeTracker){
+                    if(key.endsWith("Date")) timeTracker[key] = new Date(timeTracker[key])
+                }
+                return timeTracker
+            })
+        } catch(e){
+            return []
+        }
+    })()
+    const store: Writable<TimeTracker[]> = writable(storageValue)
     return {
         ...store,
         update(timeTracker: TimeTracker, updates: Partial<TimeTracker>): void{
@@ -60,15 +75,6 @@ export function createTimeTrackerStore() {
                 return $store
             })
         },
-        updateState(timeTracker: TimeTracker, stateUpdates: Partial<TimeTracker['state']>): void{
-            this.update(timeTracker, {
-                ...timeTracker,
-                state: {
-                    ...timeTracker.state,
-                    ...stateUpdates,
-                },
-            })
-        },
         create(partialTimeTracker?: Partial<TimeTracker>): TimeTracker{
             const timeTracker: TimeTracker = {
                 id: uuid4(),
@@ -76,10 +82,9 @@ export function createTimeTrackerStore() {
                 trackDate: new Date(),
                 createdDate: new Date(),
                 updatedDate: new Date(),
-                state: {
-                    editing: false,
-                    pinned: false,
-                },
+                editing: false,
+                pinned: false,
+                selected: false,
                 ...partialTimeTracker,
             }
 
@@ -87,8 +92,22 @@ export function createTimeTrackerStore() {
 
             return timeTracker
         },
+        delete(timeTracker: TimeTracker){
+            store.update($timeTrackers => 
+                $timeTrackers.filter(otherTimeTracker => timeTracker != otherTimeTracker))
+        },
     }
 }
 
 export const timeTrackers = createTimeTrackerStore()
-timeTrackers.create()
+
+timeTrackers.subscribe($timeTrackers => {
+    localStorage.setItem(STORAGE_TIME_TRACKER_KEY, JSON.stringify($timeTrackers))
+})
+
+if(get(timeTrackers).length == 0){
+    timeTrackers.create({
+        title: "Meg&Mike Wedding",
+        trackDate: new Date("03/15/2021, 10:00:00")
+    })
+}
