@@ -1,30 +1,22 @@
-<script>
-	export let name;
+<script lang="ts">
+    import TimeTrackerCard from "./components/TimeTrackerCard.svelte"
+    import { TimeTracker, timeTrackers} from "./stores"
+    
+    function doSomething() : void{
+        timeTrackers.create({
+            title: `Random title #${Math.floor(Math.random()*1000)}`
+        })
+    }
 </script>
 
-<main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-</main>
+<template lang="pug">
+    button(on:click!="{doSomething}") do something
+    pre { JSON.stringify($timeTrackers, null, 2) }
+    +each("Object.values($timeTrackers) as timeTracker")
+        <TimeTrackerCard {timeTracker} />
+</template>
 
-<style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+<style lang="sass">
+    *
+        color: red
 </style>
