@@ -5,7 +5,8 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
     "dev": "webpack serve --content-base public",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "deploy:a2": "sh ./scripts/deploy-a2.sh"
   },
   "devDependencies": {
     "@tsconfig/svelte": "^2.0.0",
