@@ -1,6 +1,6 @@
 <script lang="ts">
-    import Button from "./components/Button.svelte"
-    import TimeTrackerCard from "./components/TimeTrackerCard.svelte"
+    import Button from "@/components/Button.svelte"
+    import TimeTrackerCard from "@/components/TimeTrackerCard.svelte"
     import { time, TimeTracker, timeTrackers} from "./stores"
     
     function create() : void{

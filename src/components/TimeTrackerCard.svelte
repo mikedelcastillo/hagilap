@@ -16,12 +16,12 @@
         }
     }
 
-    const toggleEdit = e => timeTrackers.edit(timeTracker.editing ? null : timeTracker)
-    const togglePin = e => update({ pinned: !timeTracker.pinned })
-    const toggleSelect = e => timeTrackers.select(timeTracker.selected ? null : timeTracker)
-    const doneEdit = e => {
-        toggleEdit(e)
-        toggleSelect(e)
+    const toggleEdit = () => timeTrackers.edit(timeTracker.editing ? null : timeTracker)
+    const togglePin = () => update({ pinned: !timeTracker.pinned })
+    const toggleSelect = () => timeTrackers.select(timeTracker.selected ? null : timeTracker)
+    const doneEdit = () => {
+        toggleEdit()
+        toggleSelect()
     }
 
     $: trackDateInputValue = dateToInputDate(timeTracker.trackDate)

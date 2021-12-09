@@ -41,7 +41,7 @@ button
     align-items: center
     // font-size: var(--font-size-default)
     // color: var(--color-text)
-    .icon, .text
+    // .icon, .text
 
     .icon
         *

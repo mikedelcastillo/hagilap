@@ -30,10 +30,8 @@ export function getTimeLeft(milliseconds: number):{
         ["Months", 1000*60*60*24*30, Infinity]
     ]
 
-    let bottomRange = 0
     for(let [unit, division, topRange] of steps){
         if(milliseconds > topRange){
-            bottomRange = topRange
             continue
         }
         output.number = Math.floor(milliseconds/division)
