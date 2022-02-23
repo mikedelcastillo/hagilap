@@ -1,3 +1,4 @@
+# sudo apt install -y zip
 npm run build
 cd public
 zip -rv9 hagilap.zip * .[^.]*
