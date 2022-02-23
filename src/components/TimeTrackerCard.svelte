@@ -73,8 +73,9 @@
                         +else()
                             Button.action.edit(on:click!="{toggleEdit}" icon="edit")
                     Button.action.pin(on:click!="{togglePin}" icon!="{timeTracker.pinned ? 'star' : 'star_border'}")
-                .right
-                    Button.action.delete(on:click!="{e => timeTrackers.delete(timeTracker)}" icon="delete")
+                +if("timeTracker.editing && timeTracker.selected")
+                    .right
+                        Button.action.delete(on:click!="{e => timeTrackers.delete(timeTracker)}" icon="delete")
 </template>
 
 <style lang="sass">
